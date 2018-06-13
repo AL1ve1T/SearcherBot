@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearcherBot", "SearcherBot\SearcherBot.csproj", "{E046CC97-4EDE-40BA-8FBD-A90701FFFF15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearcherBot.Tests", "SearcherBot.Tests\SearcherBot.Tests.csproj", "{6851310B-3D45-40E8-A291-B05EF56B1540}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E046CC97-4EDE-40BA-8FBD-A90701FFFF15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E046CC97-4EDE-40BA-8FBD-A90701FFFF15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E046CC97-4EDE-40BA-8FBD-A90701FFFF15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E046CC97-4EDE-40BA-8FBD-A90701FFFF15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6851310B-3D45-40E8-A291-B05EF56B1540}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6851310B-3D45-40E8-A291-B05EF56B1540}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6851310B-3D45-40E8-A291-B05EF56B1540}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6851310B-3D45-40E8-A291-B05EF56B1540}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7983718E-1A1B-40B4-BA9E-178249126A77}
+	EndGlobalSection
+EndGlobal
