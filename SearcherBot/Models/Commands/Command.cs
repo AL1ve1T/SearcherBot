@@ -15,7 +15,7 @@ namespace SearcherBot.Models.Commands
 
         public bool Contains(string command)
         {
-            return command.Contains(this.Name) && command.Contains(BotSettings.Name);
+            return command == this.Name;
         }
     }
 }

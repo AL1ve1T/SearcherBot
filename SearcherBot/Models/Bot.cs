@@ -24,7 +24,7 @@ namespace SearcherBot.Models
             }
 
             commandsList = new List<Command>();
-            //TODO: Add more commands
+            commandsList.Add(new GoogleSearchComand());
 
             client = new TelegramBotClient(BotSettings.Key);
             var hook = string.Format(BotSettings.Url, "api/message/update");

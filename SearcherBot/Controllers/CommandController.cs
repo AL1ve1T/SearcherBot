@@ -20,14 +20,13 @@ namespace SearcherBot.Controllers
             var message = update.Message;
             var client = await Bot.Get();
 
-            foreach (var command in commands)
+            Parallel.ForEach(commands, (command) => 
             {
-                if (command.Contains(message.Text))
+                if (command.Contains(message.Text.Split()[0]))
                 {
                     command.Execute(message, client);
-                    break;
                 }
-            }
+            });
 
             return Ok();
         }
