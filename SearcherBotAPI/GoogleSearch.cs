@@ -13,18 +13,18 @@ namespace SearcherBotAPI
 {
     public static partial class SearchAPI
     {
-        public static List<string> GoogleSearch(string query, string apiKey, string engineId)
+        public static List<GoogleSearchResult> GoogleSearch(string query, string apiKey, string engineId)
         {
             var customSearchService = new CustomsearchService(new BaseClientService.Initializer { ApiKey = apiKey });
             var listRequest = customSearchService.Cse.List(query);
             listRequest.Cx = engineId;
 
             IList<Result> results = new List<Result>();
-            List<string> links = new List<string>();
+            List<GoogleSearchResult> searchResults = new List<GoogleSearchResult>();
 
             int counter = 0;
 
-            while (links.Count < 10)
+            while (searchResults.Count < 10)
             {
                 listRequest.Start = counter * 10 + 1;
                 results = listRequest.Execute().Items;
@@ -33,13 +33,18 @@ namespace SearcherBotAPI
 
                 foreach (var item in results)
                 {
-                    links.Add(item.Link);
+                    GoogleSearchResult result = new GoogleSearchResult();
+                    result.Count = (results.IndexOf(item) + counter * 10 + 1).ToString();
+                    result.Title = item.Title;
+                    result.Description = item.Snippet;
+                    result.Link = item.Link;
+
+                    searchResults.Add(result);
                 }
                 counter++;
             }
-
-            links.Reverse();
-            return links;
+            
+            return searchResults;
         }
     }
 }

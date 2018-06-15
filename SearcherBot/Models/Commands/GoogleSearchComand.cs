@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using SearcherBotAPI;
 
 namespace SearcherBot.Models.Commands
@@ -12,19 +13,22 @@ namespace SearcherBot.Models.Commands
     {
         public override string Name => "/google";
 
-        public override async void Execute(Message message, TelegramBotClient client)
+        public override void Execute(Message message, TelegramBotClient client)
         {
             if (message.Text.Split().Count() == 1)
             {
-                await client.SendTextMessageAsync(message.Chat.Id, "Please enter the search query");
+                client.SendTextMessageAsync(message.Chat.Id, "Using: /google <search_query>");
                 return;
             }
             string query = message.Text.Substring(message.Text.IndexOf(" ") + 1);
-            List<string> searchResults = SearchAPI.GoogleSearch(query, BotSettings.GoogleApiKey, BotSettings.GoogleSearchEngineId);
+            List<GoogleSearchResult> searchResults = SearchAPI.GoogleSearch(query, BotSettings.GoogleApiKey, BotSettings.GoogleSearchEngineId);
 
-            foreach (var link in searchResults)
+            foreach (var result in searchResults)
             {
-                await client.SendTextMessageAsync(message.Chat.Id, link);
+                string msg = "*Title:* " + result.Title + '\n' +
+                    "*Description:* " + result.Description + '\n' +
+                    "*Link:* " + result.Link;
+                client.SendTextMessageAsync(message.Chat.Id, msg, ParseMode.Markdown);
             }
         }
     }

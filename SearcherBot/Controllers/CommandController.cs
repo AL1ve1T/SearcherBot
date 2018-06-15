@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using SearcherBot.Models;
 using System.Web.Http.Results;
+using System.Diagnostics;
+using Telegram.Bot.Requests;
 
 namespace SearcherBot.Controllers
 {
@@ -20,14 +22,15 @@ namespace SearcherBot.Controllers
             var message = update.Message;
             var client = await Bot.Get();
 
-            Parallel.ForEach(commands, (command) => 
+            foreach (var command in commands)
             {
                 if (command.Contains(message.Text.Split()[0]))
                 {
                     command.Execute(message, client);
+                    break;
                 }
-            });
-
+            }
+            
             return Ok();
         }
     }
