@@ -6,15 +6,12 @@ using System.Threading.Tasks;
 
 namespace SearcherBotAPI
 {
-    public class GoogleSearchResult
+    public class YouTubeSearchResult
     {
-        // Title of the found link
+        // Title of video/channel/playlist
         public string Title { get; set; }
 
-        // Description of link
-        public string Description { get; set; }
-
-        // URL
+        // ID that YouTube uses to identify the reffered resource
         public string Link { get; set; }
     }
 }

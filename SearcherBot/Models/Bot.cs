@@ -25,6 +25,7 @@ namespace SearcherBot.Models
 
             commandsList = new List<Command>();
             commandsList.Add(new GoogleSearchComand());
+            commandsList.Add(new YoutubeSearchCommand());
 
             client = new TelegramBotClient(BotSettings.Key);
             var hook = string.Format(BotSettings.Url, "api/message/update");

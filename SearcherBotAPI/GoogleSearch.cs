@@ -34,7 +34,6 @@ namespace SearcherBotAPI
                 foreach (var item in results)
                 {
                     GoogleSearchResult result = new GoogleSearchResult();
-                    result.Count = (results.IndexOf(item) + counter * 10 + 1).ToString();
                     result.Title = item.Title;
                     result.Description = item.Snippet;
                     result.Link = item.Link;

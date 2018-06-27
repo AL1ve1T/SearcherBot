@@ -20,6 +20,7 @@ namespace SearcherBot.Models.Commands
                 client.SendTextMessageAsync(message.Chat.Id, "Using: /google <search_query>");
                 return;
             }
+
             string query = message.Text.Substring(message.Text.IndexOf(" ") + 1);
             List<GoogleSearchResult> searchResults = SearchAPI.GoogleSearch(query, BotSettings.GoogleApiKey, BotSettings.GoogleSearchEngineId);
 
