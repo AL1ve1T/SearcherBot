@@ -164,6 +164,7 @@
     <Compile Include="Models\BotSettings.cs" />
     <Compile Include="Models\Commands\Command.cs" />
     <Compile Include="Models\Commands\GoogleSearchComand.cs" />
+    <Compile Include="Models\Commands\StartCommand.cs" />
     <Compile Include="Models\Commands\YoutubeSearchCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

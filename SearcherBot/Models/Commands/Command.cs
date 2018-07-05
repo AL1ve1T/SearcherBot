@@ -17,5 +17,7 @@ namespace SearcherBot.Models.Commands
         {
             return command == this.Name;
         }
+
+        public abstract bool IsWaiting();
     }
 }

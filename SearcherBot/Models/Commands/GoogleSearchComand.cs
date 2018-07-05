@@ -15,7 +15,7 @@ namespace SearcherBot.Models.Commands
 
         public override void Execute(Message message, TelegramBotClient client)
         {
-            if (message.Text.Split().Count() == 1)
+            if (!IsWaiting())
             {
                 client.SendTextMessageAsync(message.Chat.Id, "Using: /google <search_query>");
                 return;
@@ -31,6 +31,11 @@ namespace SearcherBot.Models.Commands
                     "*Link:* " + result.Link;
                 client.SendTextMessageAsync(message.Chat.Id, msg, ParseMode.Markdown);
             }
+        }
+
+        public override bool IsWaiting()
+        {
+            throw new NotImplementedException();
         }
     }
 }

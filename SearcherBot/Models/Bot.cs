@@ -6,6 +6,7 @@ using System.Web;
 
 using Telegram.Bot;
 using SearcherBot.Models.Commands;
+using System.Data.SqlClient;
 
 namespace SearcherBot.Models
 {
@@ -24,6 +25,7 @@ namespace SearcherBot.Models
             }
 
             commandsList = new List<Command>();
+            commandsList.Add(new StartCommand());
             commandsList.Add(new GoogleSearchComand());
             commandsList.Add(new YoutubeSearchCommand());
 
@@ -32,6 +34,18 @@ namespace SearcherBot.Models
             await client.SetWebhookAsync(hook);
 
             return client;
+        }
+
+        public static SqlConnection GetDBConnection()
+        {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+            builder.DataSource = BotSettings.DataSource;
+            builder.UserID = BotSettings.UserID;
+            builder.Password = BotSettings.Password;
+            builder.InitialCatalog = BotSettings.InitialCatalog;
+
+            return new SqlConnection(builder.ConnectionString);
+
         }
     }
 }
