@@ -188,8 +188,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\SearcherBot - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\SearcherBot - Web Deploy1.pubxml" />
-    <None Include="Properties\PublishProfiles\SearcherBot20180615103115 - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SearcherBotAPI\SearcherBotAPI.csproj">

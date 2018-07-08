@@ -6,6 +6,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using SearcherBotAPI;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace SearcherBot.Models.Commands
 {
@@ -15,14 +16,7 @@ namespace SearcherBot.Models.Commands
 
         public override void Execute(Message message, TelegramBotClient client)
         {
-            if (!IsWaiting())
-            {
-                client.SendTextMessageAsync(message.Chat.Id, "Using: /youtube <search_query>");
-                return;
-            }
-
-            string query = message.Text.Substring(message.Text.IndexOf(" ") + 1);
-            List<YouTubeSearchResult> searchResults = SearchAPI.YouTubeSearch(query, BotSettings.GoogleApiKey);
+            List<YouTubeSearchResult> searchResults = SearchAPI.YouTubeSearch(message.Text, BotSettings.GoogleApiKey);
 
             foreach (var result in searchResults)
             {
@@ -30,11 +24,6 @@ namespace SearcherBot.Models.Commands
                     "*Link:* " + result.Link;
                 client.SendTextMessageAsync(message.Chat.Id, msg, ParseMode.Markdown);
             }
-        }
-
-        public override bool IsWaiting()
-        {
-            throw new NotImplementedException();
         }
     }
 }

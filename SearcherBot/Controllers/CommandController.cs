@@ -12,6 +12,7 @@ using System.Diagnostics;
 using Telegram.Bot.Requests;
 using SearcherBot.Models.Commands;
 using Telegram.Bot;
+using System.Data.SqlClient;
 
 namespace SearcherBot.Controllers
 {
@@ -28,25 +29,71 @@ namespace SearcherBot.Controllers
 
             if (query != null)
             {
-                ExecuteCommand(query.Message, query.Data, client, commands);
-                return Ok();
+                await client.AnswerCallbackQueryAsync(query.Id, "Success!");
+
+                using (SqlConnection connection = Bot.GetDBConnection())
+                {
+                    await connection.OpenAsync();
+                    SqlCommand sqlCommand = new SqlCommand();
+                    sqlCommand.Connection = connection;
+
+                    sqlCommand.CommandText = $"INSERT INTO Commands (ChatId, Command) VALUES ({query.Message.Chat.Id}, '{query.Data}')";
+                    sqlCommand.ExecuteNonQuery();
+
+                    connection.Close();
+                }
+
+                await client.SendTextMessageAsync(query.Message.Chat.Id, "Ok! What do you want to search?");
             }
-            
-            ExecuteCommand(message, message.Text, client, commands);
-            
+            else
+            {
+                ExecuteCommand(message, client, commands);
+            }
             return Ok();
         }
 
         [NonAction]
-        private void ExecuteCommand(Message message, string cmd, TelegramBotClient client, IReadOnlyList<Command> commands)
+        private async void ExecuteCommand(Message message, TelegramBotClient client, IReadOnlyList<Command> commands)
         {
-            foreach (var command in commands)
+            using (SqlConnection connection = Bot.GetDBConnection())
             {
-                if (command.Contains(cmd.Split()[0]))
+                await connection.OpenAsync();
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.Connection = connection;
+
+                sqlCommand.CommandText = $"SELECT DISTINCT Command FROM Commands WHERE ChatId = {message.Chat.Id}";
+
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                
+                if (reader.HasRows)
                 {
-                    command.Execute(message, client);
-                    break;
+                    reader.Read();
+                    foreach (var command in commands)
+                    {
+                        if (command.Contains(reader[0].ToString().Trim(' ')))
+                        {
+                            command.Execute(message, client);
+                            break;
+                        }
+                    }
+                    reader.Close();
+
+                    sqlCommand.CommandText = $"DELETE FROM Commands WHERE ChatId = {message.Chat.Id}";
+                    sqlCommand.ExecuteNonQuery();
                 }
+                else
+                {
+                    foreach (var command in commands)
+                    {
+                        if (command.Contains(message.Text))
+                        {
+                            command.Execute(message, client);
+                            break;
+                        }
+                    }
+                }
+                if (!reader.IsClosed) reader.Close();
+                connection.Close();
             }
         }
     }

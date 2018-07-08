@@ -25,10 +25,5 @@ namespace SearcherBot.Models.Commands
 
             client.SendTextMessageAsync(message.Chat.Id, "Where do you want to search?", replyMarkup: keyboard);
         }
-
-        public override bool IsWaiting()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

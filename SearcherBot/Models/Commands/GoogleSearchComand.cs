@@ -6,6 +6,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using SearcherBotAPI;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace SearcherBot.Models.Commands
 {
@@ -15,14 +16,7 @@ namespace SearcherBot.Models.Commands
 
         public override void Execute(Message message, TelegramBotClient client)
         {
-            if (!IsWaiting())
-            {
-                client.SendTextMessageAsync(message.Chat.Id, "Using: /google <search_query>");
-                return;
-            }
-
-            string query = message.Text.Substring(message.Text.IndexOf(" ") + 1);
-            List<GoogleSearchResult> searchResults = SearchAPI.GoogleSearch(query, BotSettings.GoogleApiKey, BotSettings.GoogleSearchEngineId);
+            List<GoogleSearchResult> searchResults = SearchAPI.GoogleSearch(message.Text, BotSettings.GoogleApiKey, BotSettings.GoogleSearchEngineId);
 
             foreach (var result in searchResults)
             {
@@ -31,11 +25,6 @@ namespace SearcherBot.Models.Commands
                     "*Link:* " + result.Link;
                 client.SendTextMessageAsync(message.Chat.Id, msg, ParseMode.Markdown);
             }
-        }
-
-        public override bool IsWaiting()
-        {
-            throw new NotImplementedException();
         }
     }
 }
