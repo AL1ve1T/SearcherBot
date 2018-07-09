@@ -17,11 +17,13 @@ namespace SearcherBot.Models.Commands
         public override void Execute(Message message, TelegramBotClient client)
         {
             List<YouTubeSearchResult> searchResults = SearchAPI.YouTubeSearch(message.Text, BotSettings.GoogleApiKey);
+            string msg = null;
 
             foreach (var result in searchResults)
             {
-                string msg = "*Title:* " + result.Title + '\n' +
+                msg = "*Title:* " + result.Title + '\n' +
                     "*Link:* " + result.Link;
+
                 client.SendTextMessageAsync(message.Chat.Id, msg, ParseMode.Markdown);
             }
         }

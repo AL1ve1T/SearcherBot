@@ -22,6 +22,7 @@ namespace SearcherBot.Controllers
         public async Task<OkResult> Update([FromBody]Update update)
         {
             var commands = Bot.Commands;
+            var inlineCommands = Bot.InlineCommands;
             var client = await Bot.Get();
 
             var message = update.Message;
@@ -29,35 +30,54 @@ namespace SearcherBot.Controllers
 
             if (query != null)
             {
-                await client.AnswerCallbackQueryAsync(query.Id, "Success!");
-
-                using (SqlConnection connection = Bot.GetDBConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand sqlCommand = new SqlCommand();
-                    sqlCommand.Connection = connection;
-
-                    sqlCommand.CommandText = $"INSERT INTO Commands (ChatId, Command) VALUES ({query.Message.Chat.Id}, '{query.Data}')";
-                    sqlCommand.ExecuteNonQuery();
-
-                    connection.Close();
-                }
-
-                await client.SendTextMessageAsync(query.Message.Chat.Id, "Ok! What do you want to search?");
+                ExecuteQuery(query, client);
             }
             else
             {
-                ExecuteCommand(message, client, commands);
+                ExecuteCommand(message, client, commands, inlineCommands);
             }
             return Ok();
         }
 
         [NonAction]
-        private async void ExecuteCommand(Message message, TelegramBotClient client, IReadOnlyList<Command> commands)
+        private void ExecuteQuery(CallbackQuery query, TelegramBotClient client)
         {
+            client.AnswerCallbackQueryAsync(query.Id, "Success!");
+
             using (SqlConnection connection = Bot.GetDBConnection())
             {
-                await connection.OpenAsync();
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.Connection = connection;
+
+                sqlCommand.CommandText = $"INSERT INTO Commands (ChatId, Command) VALUES ({query.Message.Chat.Id}, '{query.Data}')";
+                sqlCommand.ExecuteNonQuery();
+
+                connection.Close();
+            }
+
+            client.SendTextMessageAsync(query.Message.Chat.Id, "Ok! What do you want to search?");
+        }
+
+        [NonAction]
+        private void ExecuteCommand(Message message, TelegramBotClient client, IReadOnlyList<Command> commands, IReadOnlyList<Command> inlineCommands)
+        {
+            if (message.Text[0] == '/')
+            {
+                foreach (var command in inlineCommands)
+                {
+                    if (command.Contains(message.Text))
+                    {
+                        command.Execute(message, client);
+                        break;
+                    }
+                }
+                return;
+            }
+
+            using (SqlConnection connection = Bot.GetDBConnection())
+            {
+                connection.Open();
                 SqlCommand sqlCommand = new SqlCommand();
                 sqlCommand.Connection = connection;
 
@@ -81,17 +101,7 @@ namespace SearcherBot.Controllers
                     sqlCommand.CommandText = $"DELETE FROM Commands WHERE ChatId = {message.Chat.Id}";
                     sqlCommand.ExecuteNonQuery();
                 }
-                else
-                {
-                    foreach (var command in commands)
-                    {
-                        if (command.Contains(message.Text))
-                        {
-                            command.Execute(message, client);
-                            break;
-                        }
-                    }
-                }
+
                 if (!reader.IsClosed) reader.Close();
                 connection.Close();
             }

@@ -14,8 +14,10 @@ namespace SearcherBot.Models
     {
         private static TelegramBotClient client;
         private static List<Command> commandsList;
+        private static List<Command> inlineCommandsList;
 
         public static IReadOnlyList<Command> Commands => commandsList.AsReadOnly();
+        public static IReadOnlyList<Command> InlineCommands => inlineCommandsList.AsReadOnly();
 
         public static async Task<TelegramBotClient> Get()
         {
@@ -25,9 +27,11 @@ namespace SearcherBot.Models
             }
 
             commandsList = new List<Command>();
-            commandsList.Add(new StartCommand());
             commandsList.Add(new GoogleSearchComand());
             commandsList.Add(new YoutubeSearchCommand());
+
+            inlineCommandsList = new List<Command>();
+            inlineCommandsList.Add(new StartCommand());
 
             client = new TelegramBotClient(BotSettings.Key);
             var hook = string.Format(BotSettings.Url, "api/message/update");
